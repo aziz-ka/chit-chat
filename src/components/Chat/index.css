@@ -1,0 +1,22 @@
+.contact__typing {
+  font-size: .75rem;
+  line-height: 1.5rem;
+}
+.messages {
+  height: calc(100vh - 8.65rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.message__body {
+  background: #e8e9ea;
+  border-radius: .75rem;
+  min-width: 3rem;
+}
+.message__time {
+  font-size: .75rem;
+  color: #ececec;
+  vertical-align: sub;
+}
+.message__time--dark {
+  color: #5c5c5c;
+}
