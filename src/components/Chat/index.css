@@ -1,6 +1,9 @@
-.contact__typing {
+.chat__typing {
   font-size: .75rem;
   line-height: 1.5rem;
+}
+.chats .list-group {
+  height: calc(100vh - 3.5rem);
 }
 .messages {
   height: calc(100vh - 8.65rem);

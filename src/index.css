@@ -1,0 +1,15 @@
+.list-group-item.list-group-item-action {
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-color: #ececec;
+}
+.list-group-item.list-group-item-action:hover {
+  background: #f5f5f5;
+}
+.list-group-item-action:first-child {
+  border-top: none;
+}
+.list-group-item-action:last-child {
+  border-bottom: none;
+}

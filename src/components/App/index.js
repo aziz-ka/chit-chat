@@ -1,65 +1,118 @@
 import React from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
 
-import './index.css';
+import Chat from 'components/Chat';
+import Home from 'components/Home';
+import { DB } from '../../utils';
 
+
+export const AppContext = React.createContext();
 
 export default class App extends React.Component {
-  state = { name: '' }
-
-  handleChange = e => this.setState({ [e.target.name]: e.target.value })
-
-  handleSubmit = e => {
-    e.preventDefault();
-
-    const { name } = this.state;
-
-    const user = {
-      avatar: `http://tinygraphs.com/squares/${name}?theme=seascape&numcolors=4&size=50&fmt=svg`,
-      name
-    };
-
-    this.setState({ name: '' });
-
-    this.props.history.push({
-      pathname: '/chat',
-      state: { user }
-    });
+  state = {
+    chats: {},
+    messages: {},
+    user: {},
+    users: {},
+    createNewChat: createNewChat,
+    createNewUser: createNewUser,
+    createNewMsg: createNewMsg,
+    fetchChatMsgs: fetchChatMsgs,
+    fetchUsersChat: fetchUsersChat,
+    fetchUsersChats: fetchUsersChats,
+    setChats: chats => this.setState({ chats }),
+    setMessages: messages => this.setState({ messages }),
+    setUser: user => this.setState({ user })
   }
 
-  renderForm = () => (
-    <form className='form-row p-2 mt-5' onSubmit={this.handleSubmit}>
-      <div className='input-group'>
-        <label className='sr-only' htmlFor='name'>Enter your name</label>
-        <input
-          autoComplete='off'
-          className='form-control col p-2'
-          id='name'
-          name='name'
-          onChange={this.handleChange}
-          placeholder='Enter your name'
-          required
-          type='text'
-          value={this.state.name} />
-        <div className='input-group-append'>
-          <button
-            className='btn btn-primary border-0 rounded-0'
-            disabled={!this.state.name}
-            type='submit'
-          >
-            Ready Player One
-          </button>
-        </div>
-      </div>
-    </form>
-  )
+  componentDidMount = fetchAllUsers.bind(this)
 
   render = () => (
-    <div>
-      <div className='row'>
-        <h1 className='col-12'>Hello, Citizen!</h1>
-        <h3 className='col-12'>Came to chit-chat with fellow strangers? Well, pick yourself a name and hop in. But be nice ;)</h3>
-      </div>
-      { this.renderForm() }
-    </div>
+    <BrowserRouter>
+      <AppContext.Provider value={this.state}>
+        <main className='container-fluid'>
+          <Route path='/' component={Home} exact />
+          <Route path='/:user_id?/chat/:chat_id?' component={Chat} />
+        </main>
+      </AppContext.Provider>
+    </BrowserRouter>
   )
+}
+
+function createNewUser(newUser) {
+  if (!newUser) return;
+
+  DB.collection('users')
+    .add(newUser)
+    .then(doc => {
+      this.setState({ name: '' });
+      this.props.setUser({ ...newUser, id: doc.id });
+    })
+    .catch(console.error);
+}
+
+function createNewChat(newChat, userId) {
+  if (!newChat || !userId) return;
+
+  DB.collection('chats')
+    .add(newChat)
+    .then(doc => this.props.history.push({ pathname: `/${userId}/chat/${doc.id}` }))
+    .catch(console.error);
+}
+
+function createNewMsg(msg) {
+  if (!msg) return;
+
+  DB.collection('messages')
+    .add(msg)
+    .catch(console.error);
+}
+
+function fetchAllUsers() {
+  DB.collection('users')
+    .get()
+    .then(docs => {
+      const users = {};
+      docs.forEach(doc => users[doc.id] = doc.data());
+      this.setState({ users });
+    })
+    .catch(console.error);
+}
+
+function fetchChatMsgs(chatId) {
+  if (!chatId) return;
+
+  DB.collection('messages')
+    .where('chat_id', '==', chatId)
+    .get()
+    .then(docs => {
+      const messages = {};
+      docs.forEach(doc => messages[doc.id] = doc.data());
+      this.props.setMessages(messages);
+    })
+    .catch(console.error);
+}
+
+function fetchUsersChat(userId, anotherUserId) {
+  if (!userId || !anotherUserId) return;
+
+  DB.collection('chats')
+    .where('user_ids', 'array-contains', userId)
+    .where('user_ids', 'array-contains', anotherUserId)
+    .get()
+    .catch(console.error);
+}
+
+function fetchUsersChats(id) {
+  if (!id) return;
+
+  DB.collection('chats')
+    .where('users', 'array-contains', id)
+    .get()
+    .then(docs => {
+      const chats = {};
+      docs.forEach(doc => chats[doc.id] = doc.data());
+      this.props.setChats(chats);
+    })
+    .catch(console.error);
 }

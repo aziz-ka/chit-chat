@@ -1,0 +1,12 @@
+.users .list-group {
+  height: 100vh;
+}
+.users--blured {
+  filter: blur(3px);
+}
+.user__pick-new-msg {
+  background: #f5f5f5 !important;
+}
+.user__pick-new-msg:hover {
+  background: inherit !important;
+}

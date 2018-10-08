@@ -1,128 +1,69 @@
 import React from 'react';
-import classnames from 'classnames';
+import _reduce from 'lodash/reduce';
 
 import { getMinuteDiff } from '../../utils';
+import { AppContext } from '../App';
+import Chats from './chats';
+import Messages from './messages';
+import NewMessage from './new_message';
 import './index.css';
 
 
-export default class Chat extends React.Component {
-  state = {
-    new_message: '',
-    messages: [],
-    users: []
+class Chat extends React.Component {
+  get chatParticipants() {
+    return _reduce(this.props.chats, (acc, { users }) => {
+      users.forEach(id => { if (id !== this.props.match.params.user_id) acc[id] = this.props.users[id] });
+      return acc;
+    }, {});
   }
 
-  handleChange = e => this.setState({ [e.target.name]: e.target.value })
+  get chatParticipant() {
+    const chatParticipants = this.chatParticipants;
+    const chatParticipant = Object.values(chatParticipants)[0];
+    const chatParticipantId = Object.keys(chatParticipants)[0];
 
-  handleSubmit = e => {
-    e.preventDefault();
+    if (!chatParticipant) return {};
 
-    const new_message = {
-      body: this.state.new_message,
-      id: `message_${getUniqueID()}`,
-      sender: this.props.location.state.user,
-      timestamp: Date.now(),
-      status: {
-        isSent: true,
-        isReceived: false
-      }
-    };
-
-    console.log('message', new_message);
-
-    this.setState({ new_message: '' });
+    return { ...chatParticipant, id: chatParticipantId };
   }
 
-  renderNoContactsMsg = () => (
-    <p className='contact__name m-0'>Chit-Chatroom is empty. Hang in there. Someone will join... soon</p>
+  componentDidMount = () => {
+    const { chat_id, user_id } = this.props.match.params;
+
+    this.props.fetchUsersChats.call(this, user_id);
+    this.props.fetchChatMsgs.call(this, chat_id);
+    this.props.fetchUsersChat.call(this, user_id, this.chatParticipant.id);
+  }
+
+  renderContactStatus = ({ created_at }) => (
+    'this.state.contactTyping' === 'this.state.activeContactId'
+      ? 'typing...'
+      : getMinuteDiff(created_at)
+        ? `joined ${getMinuteDiff(created_at)} minutes ago`
+        : 'just joined'
   )
 
-  renderContactInfo = () => {
-    const { users } = this.state;
-    const { avatar, id, name } = lastUserToJoin;
-
-    return [
-      <img className='contact__avatar float-left mr-3' key='avatar' src={avatar} />,
-      <p className='contact__name m-0' key='name'>{ name }</p>
-    ];
-  }
-
-  renderContact = () => (
-    <div className='contact row'>
-      <div className='col bg-light p-3'>
-        {
-          this.state.users.length > 1
-            ? this.renderContactInfo()
-            : this.renderNoContactsMsg()
-        }
-      </div>
-    </div>
-  )
-
-  renderMessage = ({ body, id, sender, timestamp }) => {
-    const isUsersMsg = sender.id === this.props.location.state.user.id;
-    const dateSent = new Date(timestamp);
-    const timeSent = dateSent.toLocaleTimeString();
-    const timeSentFormatted = timeSent.replace(timeSent.substr(-6, 3), '');
-
-    const msgBodyClasses = classnames('message__body p-2', {
-      'bg-primary float-right text-right text-white': isUsersMsg
-    });
-    const msgTimeClasses = classnames('message__time pl-3 font-italic font-weight-light', {
-      'message__time--dark': !isUsersMsg
-    });
-
-    return (
-      <div className='message row' key={id}>
-        <p className='col'>
-          <span className={msgBodyClasses}>
-            { body }
-            <span className={msgTimeClasses}>{ timeSentFormatted }</span>
-          </span>
+  renderActiveContact = () => (
+    <div className='active-contact row fixed-top'>
+      <div className='col offset-md-3 offset-lg-2 bg-light p-3'>
+        <img alt='Chat participant avatar' className='contact__avatar float-left mr-3' src={this.chatParticipant.avatar} />
+        <p className='contact__name m-0'>{ this.chatParticipant.name }</p>
+        <p className='contact__typing m-0 font-italic text-muted'>
+          { this.renderContactStatus(this.chatParticipant) }
         </p>
       </div>
-    );
-  }
-
-  renderMessages = () => (
-    <div className='messages py-3'>
-      { this.state.messages.map(this.renderMessage) }
     </div>
-  )
-
-  renderForm = () => (
-    <form className='form-row fixed-bottom border-top p-2' onSubmit={this.handleSubmit}>
-      <div className='input-group'>
-        <label className='sr-only' htmlFor='new_message'>Type a message...</label>
-        <input
-          autoComplete='off'
-          className='form-control border-0 col p-2'
-          disabled={this.state.users.length <= 1}
-          id='new_message'
-          name='new_message'
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-          placeholder='Type a message...'
-          type='text'
-          value={this.state.new_message} />
-        <div className='input-group-append'>
-          <button
-            className='btn btn-outline-secondary border-0 rounded-0'
-            disabled={!this.state.new_message}
-            type='submit'
-          >
-            Send
-          </button>
-        </div>
-      </div>
-    </form>
   )
 
   render = () => (
     <div>
-      { this.renderContact() }
-      { this.renderMessages() }
-      { this.renderForm() }
+      { this.props.match.params.user_id && this.renderActiveContact() }
+      <Chats {...this.props} chatParticipant={this.chatParticipant} />
+      <Messages {...this.props} />
+      <NewMessage {...this.props} />
     </div>
   )
 }
+
+
+export default props => <AppContext.Consumer>{ context => <Chat {...context} {...props} /> }</AppContext.Consumer>;
