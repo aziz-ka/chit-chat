@@ -21,6 +21,7 @@ class Home extends React.Component {
     };
 
     this.props.createNewUser.call(this, newUser);
+    this.setState({ name: '' });
   }
 
   renderForm = () => (
@@ -57,7 +58,7 @@ class Home extends React.Component {
       <div className='new-user col-8'>
         <h1>Hello, Citizen!</h1>
         <h3>Came to chit-chat with fellow strangers? Well, pick yourself a name and hop in. But be nice ;)</h3>
-        { this.renderForm() }
+        { !this.props.match.params.user_id && this.renderForm() }
       </div>
     </div>
   )

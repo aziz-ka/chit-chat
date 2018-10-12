@@ -10,16 +10,21 @@ export default class Messages extends React.Component {
     const timeSent = dateSent.toLocaleTimeString();
     const timeSentFormatted = timeSent.replace(timeSent.substr(-6, 3), '');
 
-    const msgBodyClasses = classnames('message__body p-2', {
-      'bg-primary float-right text-right text-white': isUsersMsg
+    const msgBodyClasses = classnames('message__body px-2 py-1', {
+      'bg-primary float-right text-white': isUsersMsg,
+      'float-left': !isUsersMsg
     });
-    const msgTimeClasses = classnames('message__time pl-3 font-italic font-weight-light', {
+    const msgTimeClasses = classnames('message__time pl-3 font-italic font-weight-light float-right mb-2', {
       'message__time--dark': !isUsersMsg
+    });
+    const msgWrapperClasses = classnames('mb-1', {
+      'col offset-md-6': isUsersMsg,
+      'col-6 offset-md-3 offset-xl-2': !isUsersMsg
     });
 
     return (
       <div className='message row' key={id}>
-        <p className='col'>
+        <p className={msgWrapperClasses}>
           <span className={msgBodyClasses}>
             { body }
             <span className={msgTimeClasses}>{ timeSentFormatted }</span>

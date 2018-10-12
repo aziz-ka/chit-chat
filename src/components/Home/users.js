@@ -2,17 +2,27 @@ import React from 'react';
 import _map from 'lodash/map';
 import classnames from 'classnames';
 
+import { getChatId } from '../../utils';
+
 
 export default class Users extends React.Component {
-  handleUserSelection = id => {
-    if (!this.props.user.id) return;
+  handleUserSelection = selectedUserId => {
+    const { id } = this.props.user;
 
-    const newChat = {
+    if (!id) return;
+
+    const chat = {
       created_at: new Date(),
-      users: [this.props.user.id, id]
+      user_ids: {
+        [selectedUserId]: true,
+        [id]: true
+      }
     };
+    const chatId = getChatId(selectedUserId, id);
+    const payload = { chat, chatId };
 
-    this.props.createNewChat.call(this, newChat, this.props.user.id);
+    this.props.createNewChat.call(this, payload);
+    this.props.history.push({ pathname: `/${id}/chat/${chatId}` });
   }
 
   renderUser = ({ avatar, name }, id) => {
@@ -32,9 +42,9 @@ export default class Users extends React.Component {
   }
 
   render = () => (
-    <div className={classnames('users col-4 p-0', { 'users--blured': !this.props.user.id })}>
+    <div className={classnames('users col-4 p-0', { 'users--blured': !this.props.match.params.user_id })}>
       <ul className='list-group bg-light pr-0'>
-        <li className='user__pick-new-msg list-group-item list-group-item-action rounded-0'>
+        <li className='user__pick-new-msg list-group-item list-group-item-action rounded-0 text-center'>
           Start a new chat
         </li>
         { _map(this.props.users, this.renderUser) }

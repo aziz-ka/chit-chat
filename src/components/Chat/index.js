@@ -1,5 +1,5 @@
 import React from 'react';
-import _reduce from 'lodash/reduce';
+import _get from 'lodash/get';
 
 import { getMinuteDiff } from '../../utils';
 import { AppContext } from '../App';
@@ -10,29 +10,26 @@ import './index.css';
 
 
 class Chat extends React.Component {
-  get chatParticipants() {
-    return _reduce(this.props.chats, (acc, { users }) => {
-      users.forEach(id => { if (id !== this.props.match.params.user_id) acc[id] = this.props.users[id] });
-      return acc;
-    }, {});
-  }
-
-  get chatParticipant() {
-    const chatParticipants = this.chatParticipants;
-    const chatParticipant = Object.values(chatParticipants)[0];
-    const chatParticipantId = Object.keys(chatParticipants)[0];
-
-    if (!chatParticipant) return {};
-
-    return { ...chatParticipant, id: chatParticipantId };
-  }
-
   componentDidMount = () => {
     const { chat_id, user_id } = this.props.match.params;
 
-    this.props.fetchUsersChats.call(this, user_id);
-    this.props.fetchChatMsgs.call(this, chat_id);
-    this.props.fetchUsersChat.call(this, user_id, this.chatParticipant.id);
+    this.props.listenToChats.call(this, user_id);
+    this.props.listenToMessages.call(this, chat_id);
+  }
+
+  componentDidUpdate = prevProps => {
+    if (prevProps.match.params.chat_id !== this.props.match.params.chat_id) {
+      this.props.listenToMessages.call(this, this.props.match.params.chat_id);
+    }
+  }
+
+  getChatParticipant(chatId=this.props.match.params.chat_id) {
+    const { chats, match, users } = this.props;
+    const allChatParticipantIds = Object.keys(_get(chats[chatId], 'user_ids', {}));
+    const chatParticipantId = allChatParticipantIds.filter(id => id !== match.params.user_id);
+    const chatParticipant = users[chatParticipantId[0]];
+
+    return { ...chatParticipant, id: chatParticipantId[0] };
   }
 
   renderContactStatus = ({ created_at }) => (
@@ -44,12 +41,15 @@ class Chat extends React.Component {
   )
 
   renderActiveContact = () => (
-    <div className='active-contact row fixed-top'>
-      <div className='col offset-md-3 offset-lg-2 bg-light p-3'>
-        <img alt='Chat participant avatar' className='contact__avatar float-left mr-3' src={this.chatParticipant.avatar} />
-        <p className='contact__name m-0'>{ this.chatParticipant.name }</p>
+    <div className='active-contact fixed-top'>
+      <div className='col offset-md-3 offset-xl-2 bg-light p-3'>
+        <img
+          alt='Chat participant avatar'
+          className='contact__avatar rounded-circle float-left mr-3'
+          src={this.getChatParticipant().avatar} />
+        <p className='contact__name m-0'>{ this.getChatParticipant().name }</p>
         <p className='contact__typing m-0 font-italic text-muted'>
-          { this.renderContactStatus(this.chatParticipant) }
+          { this.renderContactStatus(this.getChatParticipant()) }
         </p>
       </div>
     </div>
@@ -58,7 +58,7 @@ class Chat extends React.Component {
   render = () => (
     <div>
       { this.props.match.params.user_id && this.renderActiveContact() }
-      <Chats {...this.props} chatParticipant={this.chatParticipant} />
+      <Chats {...this.props} chatParticipant={this.getChatParticipant} />
       <Messages {...this.props} />
       <NewMessage {...this.props} />
     </div>
@@ -66,4 +66,6 @@ class Chat extends React.Component {
 }
 
 
-export default props => <AppContext.Consumer>{ context => <Chat {...context} {...props} /> }</AppContext.Consumer>;
+export default props => (
+  <AppContext.Consumer>{ context => <Chat {...context} {...props} /> }</AppContext.Consumer>
+);

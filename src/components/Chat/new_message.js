@@ -1,15 +1,15 @@
 import React from 'react';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 
-import { debounce } from '../../utils';
+// import { debounce } from '../../utils';
 
 
-const socket = io(process.env.REACT_APP_API_URL);
+// const socket = io(process.env.REACT_APP_API_URL);
 
 export default class NewMessage extends React.Component {
   state = { new_message: '' }
 
-  handleBlur = e => debounce(() => socket.emit('typing', null), 500)()
+  // handleBlur = e => debounce(() => socket.emit('typing', null), 500)()
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value })
 
