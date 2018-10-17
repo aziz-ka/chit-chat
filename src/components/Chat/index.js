@@ -1,4 +1,5 @@
 import React from 'react';
+import io from 'socket.io-client';
 import _get from 'lodash/get';
 
 import { getMinuteDiff } from '../../utils';
@@ -9,17 +10,26 @@ import NewMessage from './new_message';
 import './index.css';
 
 
+const socket = io(process.env.REACT_APP_API_URL);
+
 class Chat extends React.Component {
   componentDidMount = () => {
     const { chat_id, user_id } = this.props.match.params;
+
+    socket.emit('chat', chat_id);
+    socket.on('typing', ({ isTyping }) => this.props.setMessageStatus({ isTyping }));
 
     this.props.listenToChats.call(this, user_id);
     this.props.listenToMessages.call(this, chat_id);
   }
 
   componentDidUpdate = prevProps => {
-    if (prevProps.match.params.chat_id !== this.props.match.params.chat_id) {
-      this.props.listenToMessages.call(this, this.props.match.params.chat_id);
+    const { chat_id } = this.props.match.params;
+
+    if (prevProps.match.params.chat_id !== chat_id) {
+      this.props.listenToMessages.call(this, chat_id);
+
+      socket.emit('chat', chat_id);
     }
   }
 
@@ -33,7 +43,7 @@ class Chat extends React.Component {
   }
 
   renderContactStatus = ({ created_at }) => (
-    'this.state.contactTyping' === 'this.state.activeContactId'
+    this.props.isTyping
       ? 'typing...'
       : getMinuteDiff(created_at)
         ? `joined ${getMinuteDiff(created_at)} minutes ago`
@@ -57,7 +67,7 @@ class Chat extends React.Component {
 
   render = () => (
     <div>
-      { this.props.match.params.user_id && this.renderActiveContact() }
+      { this.props.match.params.user_id && this.props.match.params.chat_id && this.renderActiveContact() }
       <Chats {...this.props} chatParticipant={this.getChatParticipant} />
       <Messages {...this.props} />
       <NewMessage {...this.props} />

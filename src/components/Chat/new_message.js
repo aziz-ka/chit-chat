@@ -1,17 +1,37 @@
 import React from 'react';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
+import _debounce from 'lodash/debounce';
 
-// import { debounce } from '../../utils';
 
-
-// const socket = io(process.env.REACT_APP_API_URL);
+const socket = io(process.env.REACT_APP_API_URL);
 
 export default class NewMessage extends React.Component {
   state = { new_message: '' }
 
-  // handleBlur = e => debounce(() => socket.emit('typing', null), 500)()
+  emitTyping = _debounce(() => {
+    const { chat_id, user_id } = this.props.match.params;
+    const socketPayload = {
+      chat_id,
+      user_id,
+      isTyping: true
+    };
 
-  handleChange = e => this.setState({ [e.target.name]: e.target.value })
+    socket.emit('typing', socketPayload);
+    this.emitTypingStopped();
+  }, 300)
+
+  emitTypingStopped = () => setTimeout(() => socket.emit('typing', {
+    chat_id: this.props.match.params.chat_id,
+    user_id: this.props.match.params.user_id,
+    isTyping: false
+  }), 3000)
+
+  handleChange = e => {
+    e.target.value && this.emitTyping();
+    this.setState({ [e.target.name]: e.target.value });
+
+    clearInterval(this.emitTypingStopped);
+  }
 
   handleSubmit = e => {
     e.preventDefault();
@@ -22,7 +42,8 @@ export default class NewMessage extends React.Component {
       chat_id,
       user_id,
       body: this.state.new_message,
-      created_at: new Date()
+      created_at: new Date(),
+      isDelivered: true
     };
 
     this.props.createNewMsg(newMessage);

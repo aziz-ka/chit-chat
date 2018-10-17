@@ -4,6 +4,7 @@
 ## Stack
 
 - React
+- Firebase
 - Socket.io
 - Bootstrap 4
 

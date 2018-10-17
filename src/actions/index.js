@@ -36,7 +36,7 @@ export function listenToChats(id) {
     });
 }
 
-export function listenToMessages(chatId) {
+export function listenToMessages(chatId='') {
   DB.collection('messages')
     .where('chat_id', '==', chatId)
     .orderBy('created_at')

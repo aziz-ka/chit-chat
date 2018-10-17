@@ -24,6 +24,7 @@ export default class App extends React.Component {
     listenToMessages: listenToMessages,
     setChats: chats => this.setState({ chats }),
     setMessages: messages => this.setState({ messages }),
+    setMessageStatus: status => this.setState(status),
     setUser: user => this.setState({ user })
   }
 

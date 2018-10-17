@@ -10,7 +10,10 @@ export default class Chats extends React.Component {
       key={id}
       to={`/${this.props.match.params.user_id}/chat/${id}`}
     >
-      <img alt='Chat participants avatar' className='contact__avatar rounded-circle' src={this.props.chatParticipant.call(this, id).avatar} />
+      <img
+        alt='Chat participants avatar'
+        className='contact__avatar rounded-circle'
+        src={this.props.chatParticipant.call(this, id).avatar} />
       &nbsp;&nbsp;&nbsp;
       <span className='contact__name'>{ this.props.chatParticipant.call(this, id).name }</span>
     </Link>

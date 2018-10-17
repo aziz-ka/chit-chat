@@ -4,7 +4,7 @@ import _map from 'lodash/map';
 
 
 export default class Messages extends React.Component {
-  renderMessage = ({ body, user_id, created_at }, id) => {
+  renderMessage = ({ body, created_at, isDelivered, user_id }, id) => {
     const isUsersMsg = user_id === this.props.match.params.user_id;
     const dateSent = new Date(created_at);
     const timeSent = dateSent.toLocaleTimeString();
@@ -21,13 +21,26 @@ export default class Messages extends React.Component {
       'col offset-md-6': isUsersMsg,
       'col-6 offset-md-3 offset-xl-2': !isUsersMsg
     });
+    const msgStatusClasses = classnames('message__status', {
+      'text-warning': isDelivered && isUsersMsg
+    });
 
     return (
       <div className='message row' key={id}>
         <p className={msgWrapperClasses}>
           <span className={msgBodyClasses}>
             { body }
-            <span className={msgTimeClasses}>{ timeSentFormatted }</span>
+            <span className={msgTimeClasses}>
+              { timeSentFormatted }
+              &nbsp;
+              {
+                isUsersMsg &&
+                  [
+                    <span className={msgStatusClasses} key='check_1'>&#10003;</span>,
+                    <span className={msgStatusClasses} key='check_2'>&#10003;</span>
+                  ]
+              }
+            </span>
           </span>
         </p>
       </div>
