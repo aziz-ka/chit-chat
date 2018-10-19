@@ -1,7 +1,7 @@
 # [ChitChat Client](https://chitchat.now.sh)
 
 
-## Stack
+#### Stack
 
 - React
 - Firebase

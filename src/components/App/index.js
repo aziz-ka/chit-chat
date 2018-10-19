@@ -6,7 +6,7 @@ import Home from 'components/Home';
 import {
   createNewChat, createNewMsg, createNewUser,
   listenToChats, listenToMessages, listenToUsers
-} from '../../actions';
+} from 'actions';
 
 
 export const AppContext = React.createContext();

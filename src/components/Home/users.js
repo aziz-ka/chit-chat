@@ -26,14 +26,16 @@ export default class Users extends React.Component {
   }
 
   renderUser = ({ avatar, name }, id) => {
-    if (id === this.props.match.params.user_id) return;
+    const { user_id } = this.props.match.params;
+
+    if (id === user_id) return;
 
     return (
       <Link
         className='user list-group-item list-group-item-action rounded-0'
         key={id}
         onClick={this.handleUserSelection.bind(this, id)}
-        to={`/${id}/chat/${getChatId(id, this.props.user.id)}`}
+        to={`/${user_id}/chat/${getChatId(id, user_id)}`}
       >
         <img alt='User avatar' className='user__avatar rounded-circle' src={avatar} />
         &nbsp;&nbsp;&nbsp;
