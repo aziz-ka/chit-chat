@@ -1,0 +1,15 @@
+{
+  "alias": "chitchat",
+  "name": "chitchat-client",
+  "dotenv": true,
+  "dotenv": ".env.production",
+  "type": "static",
+  "static": {
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -22,8 +22,12 @@ export default class Chats extends React.Component {
   render = () => (
     <div className='chats row'>
       <ul className='list-group position-fixed bg-light col-md-3 col-xl-2 p-0'>
-        <li className='user__pick-new-msg list-group-item list-group-item-action rounded-0 text-center'>
-          Your chats
+        <li className='chats__go-to-chat list-group-item list-group-item-action rounded-0 text-center'>
+          {
+            Object.keys(this.props.users).length
+              ? 'Active chats'
+              : <span>No chats yet<br /><Link to={this.props.match.params.user_id}>start a new chat</Link></span>
+          }
         </li>
         { _map(this.props.chats, this.renderChat) }
       </ul>

@@ -1,8 +1,9 @@
 import React from 'react';
 import _map from 'lodash/map';
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 
-import { getChatId } from '../../utils';
+import { getChatId } from 'utils';
 
 
 export default class Users extends React.Component {
@@ -22,30 +23,46 @@ export default class Users extends React.Component {
     const payload = { chat, chatId };
 
     this.props.createNewChat.call(this, payload);
-    this.props.history.push({ pathname: `/${id}/chat/${chatId}` });
   }
 
   renderUser = ({ avatar, name }, id) => {
-    if (id === this.props.user.id) return;
+    if (id === this.props.match.params.user_id) return;
 
     return (
-      <button
+      <Link
         className='user list-group-item list-group-item-action rounded-0'
         key={id}
         onClick={this.handleUserSelection.bind(this, id)}
+        to={`/${id}/chat/${getChatId(id, this.props.user.id)}`}
       >
         <img alt='User avatar' className='user__avatar rounded-circle' src={avatar} />
         &nbsp;&nbsp;&nbsp;
         <span className='user__name'>{ name }</span>
-      </button>
+      </Link>
     );
+  }
+
+  renderUserListHeader = () => {
+    if (!Object.keys(this.props.users).length) return "No one's here yet";
+
+    const { user_id } = this.props.match.params;
+
+    if (user_id) return (
+      <span>
+        Start a new chat
+        <br />
+        { user_id && <Link to={`/${user_id}/chat/`}>or go to your chats</Link> }
+      </span>
+    );
+
+    return 'Start a new chat';
   }
 
   render = () => (
     <div className={classnames('users col-4 p-0', { 'users--blured': !this.props.match.params.user_id })}>
       <ul className='list-group bg-light pr-0'>
-        <li className='user__pick-new-msg list-group-item list-group-item-action rounded-0 text-center'>
-          Start a new chat
+        <li className='users__start-new-chat list-group-item list-group-item-action rounded-0 text-center'>
+          { this.renderUserListHeader() }
         </li>
         { _map(this.props.users, this.renderUser) }
       </ul>

@@ -2,7 +2,7 @@ import firebaseApp from 'firebase/app';
 import 'firebase/firestore';
 
 
-export const getChatId = (userId, selectedUserId) =>
+export const getChatId = (userId='', selectedUserId='') =>
   (userId.substr(-6) + selectedUserId.substr(-6))
   .split('')
   .sort()

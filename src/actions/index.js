@@ -1,4 +1,4 @@
-import { DB } from '../utils';
+import { DB } from 'utils';
 
 
 export function createNewChat({ chat, chatId }) {

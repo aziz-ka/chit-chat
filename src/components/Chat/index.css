@@ -1,5 +1,6 @@
 .active-contact,
-.user__pick-new-msg {
+.chats__go-to-chat,
+.users__start-new-chat {
   height: 5rem;
 }
 .chat, .contact__name, .user {
@@ -36,7 +37,4 @@
 }
 .message__time--dark {
   color: #5c5c5c;
-}
-.user__pick-new-msg {
-  line-height: 3rem;
 }

@@ -16,7 +16,7 @@ class Home extends React.Component {
     const { name } = this.state;
     const newUser = {
       name,
-      avatar: `http://tinygraphs.com/squares/${name}?theme=seascape&numcolors=4&size=50&fmt=svg`,
+      avatar: `https://www.tinygraphs.com/squares/${name}?theme=seascape&numcolors=4&size=50&fmt=svg`,
       created_at: new Date()
     };
 
@@ -57,7 +57,7 @@ class Home extends React.Component {
       <Users {...this.props} />
       <div className='new-user col-8'>
         <h1>Hello, Citizen!</h1>
-        <h3>Came to chit-chat with fellow strangers? Well, pick yourself a name and hop in. But be nice ;)</h3>
+        <h3>Came to chitchat with fellow strangers? Well, pick yourself a name and hop in. But be nice ;)</h3>
         { !this.props.match.params.user_id && this.renderForm() }
       </div>
     </div>

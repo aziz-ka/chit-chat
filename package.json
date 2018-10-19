@@ -1,6 +1,6 @@
 {
-  "name": "chit-chat",
-  "homepage": "https://internal-eyes.surge.sh",
+  "name": "chitchat-client",
+  "homepage": "https://chitchat.now.sh",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

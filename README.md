@@ -1,4 +1,4 @@
-# [Chit Chat](https://internal-eyes.surge.sh)
+# [ChitChat Client](https://chitchat.now.sh)
 
 
 ## Stack
@@ -7,13 +7,14 @@
 - Firebase
 - Socket.io
 - Bootstrap 4
+- Now
 
 
 #### Quick Start
 
 ```shell
-$ git clone git@github.com:aziz-ka/chit-chat.git
-$ cd chit-chat
+$ git clone git@github.com:aziz-ka/chitchat-client.git
+$ cd chitchat-client
 $ yarn
 $ yarn start
 ```

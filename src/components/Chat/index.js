@@ -2,7 +2,7 @@ import React from 'react';
 import io from 'socket.io-client';
 import _get from 'lodash/get';
 
-import { getMinuteDiff } from '../../utils';
+import { getMinuteDiff } from 'utils';
 import { AppContext } from '../App';
 import Chats from './chats';
 import Messages from './messages';
