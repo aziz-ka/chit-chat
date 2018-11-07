@@ -26,3 +26,10 @@ $ yarn start
 |---|---|
 |`yarn start`|Start the app on `localhost:3000`|
 |`yarn build`|Build the app to `./build`|
+
+
+#### To-Do
+
+- [ ] Auth
+- [ ] Mobile responsiveness
+- [ ] Socket.io

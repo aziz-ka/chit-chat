@@ -1,5 +1,6 @@
-.users .list-group {
+.users {
   height: 100vh;
+  overflow-y: auto;
 }
 .users--blured {
   filter: blur(3px);

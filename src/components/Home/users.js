@@ -7,19 +7,19 @@ import { getChatId } from 'utils';
 
 
 export default class Users extends React.Component {
-  handleUserSelection = selectedUserId => {
-    const { id } = this.props.user;
+  handleUserSelection = (selectedUserId, e) => {
+    const { user_id } = this.props.match.params;
 
-    if (!id) return;
+    if (!user_id) e.preventDefault();
 
     const chat = {
       created_at: new Date(),
       user_ids: {
         [selectedUserId]: true,
-        [id]: true
+        [user_id]: true
       }
     };
-    const chatId = getChatId(selectedUserId, id);
+    const chatId = getChatId(selectedUserId, user_id);
     const payload = { chat, chatId };
 
     this.props.createNewChat.call(this, payload);
@@ -35,7 +35,7 @@ export default class Users extends React.Component {
         className='user list-group-item list-group-item-action rounded-0'
         key={id}
         onClick={this.handleUserSelection.bind(this, id)}
-        to={`/${user_id}/chat/${getChatId(id, user_id)}`}
+        to={user_id ? `/${user_id}/chat/${getChatId(id, user_id)}` : ''}
       >
         <img alt='User avatar' className='user__avatar rounded-circle' src={avatar} />
         &nbsp;&nbsp;&nbsp;
