@@ -5,7 +5,7 @@ import Users from './users';
 import './index.css';
 
 
-class Home extends React.Component {
+class Home extends React.PureComponent {
   state = { name: '' }
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value })

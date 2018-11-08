@@ -5,7 +5,7 @@ import _debounce from 'lodash/debounce';
 
 const socket = io(process.env.REACT_APP_API_URL);
 
-export default class NewMessage extends React.Component {
+export default class NewMessage extends React.PureComponent {
   state = { new_message: '' }
 
   emitTyping = _debounce(() => {

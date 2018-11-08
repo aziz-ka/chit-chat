@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import _map from 'lodash/map';
 
 
-export default class Messages extends React.Component {
+export default class Messages extends React.PureComponent {
   renderMessage = ({ body, created_at, isDelivered, user_id }, id) => {
     const isUsersMsg = user_id === this.props.match.params.user_id;
     const dateSent = new Date(created_at);

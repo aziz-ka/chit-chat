@@ -8,12 +8,20 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.chat {
+  min-height: 5rem;
+}
 .chat__typing {
   font-size: .75rem;
   line-height: 1.5rem;
 }
+.chats__go-to-chat {
+  top: 0;
+}
 .chats .list-group {
-  height: calc(100vh - 3.55rem);
+  height: calc(100vh - 8.55rem);
+  overflow-y: auto;
+  top: 5rem;
   z-index: 1031;
 }
 .messages {

@@ -3,7 +3,7 @@ import _map from 'lodash/map';
 import { Link } from 'react-router-dom';
 
 
-export default class Chats extends React.Component {
+export default class Chats extends React.PureComponent {
   renderChat = (chat, id) => (
     <Link
       className='chat list-group-item list-group-item-action rounded-0'
@@ -22,7 +22,7 @@ export default class Chats extends React.Component {
   render = () => (
     <div className='chats row'>
       <ul className='list-group position-fixed bg-light col-md-3 col-xl-2 p-0'>
-        <li className='chats__go-to-chat list-group-item list-group-item-action rounded-0 text-center'>
+        <li className='chats__go-to-chat list-group-item list-group-item-action col-md-3 col-xl-2 position-fixed rounded-0 text-center'>
           {
             Object.keys(this.props.users).length
               ? 'Active chats'

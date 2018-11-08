@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { getChatId } from 'utils';
 
 
-export default class Users extends React.Component {
+export default class Users extends React.PureComponent {
   handleUserSelection = (selectedUserId, e) => {
     const { user_id } = this.props.match.params;
 

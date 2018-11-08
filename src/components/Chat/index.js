@@ -12,7 +12,7 @@ import './index.css';
 
 const socket = io(process.env.REACT_APP_API_URL);
 
-class Chat extends React.Component {
+class Chat extends React.PureComponent {
   componentDidMount = () => {
     const { chat_id, user_id } = this.props.match.params;
 
@@ -68,9 +68,13 @@ class Chat extends React.Component {
   render = () => (
     <div>
       { this.props.match.params.user_id && this.props.match.params.chat_id && this.renderActiveContact() }
-      <Chats {...this.props} chatParticipant={this.getChatParticipant} />
-      <Messages {...this.props} />
-      <NewMessage {...this.props} />
+      <Chats
+        match={this.props.match}
+        chats={this.props.chats}
+        users={this.props.users}
+        chatParticipant={this.getChatParticipant} />
+      <Messages match={this.props.match} messages={this.props.messages} />
+      <NewMessage match={this.props.match} createNewMsg={this.props.createNewMsg} />
     </div>
   )
 }
